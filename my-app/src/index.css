@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  --color-nu-red: #C8102E;
+  --color-nu-red-light: #E8354E;
+  --color-nu-black: #111;
+  --color-nu-gray-700: #444;
+  --color-nu-gray-600: #555;
+  --color-nu-gray-500: #777;
+  --color-nu-gray-400: #999;
+  --color-nu-gray-200: #ddd;
+  --color-nu-gray-100: #F3F3F3;
+  --color-nu-green: #16A34A;
+  --color-nu-orange: #EA580C;
+  --color-nu-purple: #7C3AED;
+}
