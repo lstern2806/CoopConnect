@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { hasProfanity } from '../lib/profanity'
+import { api } from '../lib/api'
 
 const COOP_CYCLES = [
   'Spring 2025', 'Summer 2025', 'Fall 2025',
@@ -27,7 +27,7 @@ function CharCounter({ value, max }) {
 }
 
 export default function Profile() {
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -38,22 +38,17 @@ export default function Profile() {
 
   useEffect(() => {
     async function loadProfile() {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
-
-      if (error && error.code !== 'PGRST116') {
-        setError('Failed to load profile.')
-      } else if (data) {
+      try {
+        const data = await api('/api/profiles/me', { token: session.access_token })
         setProfile(data)
+      } catch (err) {
+        setError('Failed to load profile.')
       }
       setLoading(false)
     }
 
-    if (user) loadProfile()
-  }, [user])
+    if (session) loadProfile()
+  }, [session])
 
   function updateField(field, value) {
     const limit = FIELD_LIMITS[field]
@@ -96,27 +91,26 @@ export default function Profile() {
     setError('')
     setSaving(true)
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        full_name: profile.full_name,
-        major: profile.major,
-        graduation_year: profile.graduation_year,
-        coop_cycle: profile.coop_cycle,
-        interests: profile.interests,
-        bio: profile.bio,
-        updated_at: new Date().toISOString(),
+    try {
+      await api('/api/profiles/me', {
+        method: 'PUT',
+        token: session.access_token,
+        body: {
+          full_name: profile.full_name,
+          major: profile.major,
+          graduation_year: profile.graduation_year,
+          coop_cycle: profile.coop_cycle,
+          interests: profile.interests,
+          bio: profile.bio,
+        },
       })
-      .eq('id', user.id)
-
-    setSaving(false)
-
-    if (error) {
-      setError('Failed to save profile.')
-    } else {
       setMessage('Profile saved!')
       setTimeout(() => setMessage(''), 3000)
+    } catch (err) {
+      setError('Failed to save profile.')
     }
+
+    setSaving(false)
   }
 
   if (loading) {

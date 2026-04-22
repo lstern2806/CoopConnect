@@ -1,13 +1,25 @@
 import { createContext, useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+import { api } from '../lib/api'
 
 export const AuthContext = createContext(null)
 
-const NU_DOMAINS = ['northeastern.edu', 'husky.neu.edu']
+const TOKEN_KEY = 'coopconnect_session'
 
-function isNuEmail(email) {
-  const domain = email.split('@')[1]?.toLowerCase()
-  return NU_DOMAINS.includes(domain)
+function saveSession(session) {
+  if (session) {
+    localStorage.setItem(TOKEN_KEY, JSON.stringify(session))
+  } else {
+    localStorage.removeItem(TOKEN_KEY)
+  }
+}
+
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(TOKEN_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
 }
 
 export function AuthProvider({ children }) {
@@ -16,46 +28,91 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
+    async function restoreSession() {
+      const stored = loadSession()
+      if (!stored?.access_token) {
+        setLoading(false)
+        return
       }
-    )
 
-    return () => subscription.unsubscribe()
+      try {
+        const data = await api('/api/auth/me', { token: stored.access_token })
+        setUser(data.user)
+        setSession(stored)
+      } catch {
+        // Token expired — try refresh
+        if (stored.refresh_token) {
+          try {
+            const refreshed = await api('/api/auth/refresh', {
+              method: 'POST',
+              body: { refresh_token: stored.refresh_token },
+            })
+            setUser(refreshed.user)
+            setSession(refreshed.session)
+            saveSession(refreshed.session)
+          } catch {
+            saveSession(null)
+          }
+        } else {
+          saveSession(null)
+        }
+      }
+
+      setLoading(false)
+    }
+
+    restoreSession()
   }, [])
 
   async function signUp(email, password) {
-    if (!isNuEmail(email)) {
-      return { error: { message: 'Only @northeastern.edu and @husky.neu.edu emails are allowed.' } }
+    try {
+      const data = await api('/api/auth/signup', {
+        method: 'POST',
+        body: { email, password },
+      })
+      if (data.session) {
+        setUser(data.user)
+        setSession(data.session)
+        saveSession(data.session)
+      }
+      return { data, error: null }
+    } catch (err) {
+      return { data: null, error: { message: err.message } }
     }
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    return { data, error }
   }
 
   async function signInWithPassword(email, password) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    return { data, error }
+    try {
+      const data = await api('/api/auth/login', {
+        method: 'POST',
+        body: { email, password },
+      })
+      setUser(data.user)
+      setSession(data.session)
+      saveSession(data.session)
+      return { data, error: null }
+    } catch (err) {
+      return { data: null, error: { message: err.message } }
+    }
   }
 
   async function signInWithMagicLink(email) {
-    if (!isNuEmail(email)) {
-      return { error: { message: 'Only @northeastern.edu and @husky.neu.edu emails are allowed.' } }
+    try {
+      const data = await api('/api/auth/magic-link', {
+        method: 'POST',
+        body: { email },
+      })
+      return { data, error: null }
+    } catch (err) {
+      return { data: null, error: { message: err.message } }
     }
-    const { data, error } = await supabase.auth.signInWithOtp({ email })
-    return { data, error }
   }
 
   async function signOut() {
-    const { error } = await supabase.auth.signOut()
-    return { error }
+    setUser(null)
+    setSession(null)
+    saveSession(null)
+    return { error: null }
   }
 
   const value = {
