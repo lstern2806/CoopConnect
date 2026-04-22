@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
+import { api } from '../lib/api'
 
 export default function Login() {
   const [mode, setMode] = useState('password')
@@ -9,22 +10,45 @@ export default function Login() {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [needsConfirmation, setNeedsConfirmation] = useState(false)
+  const [resending, setResending] = useState(false)
   const { signInWithPassword, signInWithMagicLink } = useAuth()
   const navigate = useNavigate()
 
   async function handlePasswordLogin(e) {
     e.preventDefault()
     setError('')
+    setNeedsConfirmation(false)
     setSubmitting(true)
 
     const { error } = await signInWithPassword(email, password)
     setSubmitting(false)
 
     if (error) {
+      if (error.message.toLowerCase().includes('confirm your email')) {
+        setNeedsConfirmation(true)
+      }
       setError(error.message)
     } else {
       navigate('/dashboard')
     }
+  }
+
+  async function handleResendConfirmation() {
+    setResending(true)
+    setMessage('')
+    try {
+      const data = await api('/api/auth/resend-confirmation', {
+        method: 'POST',
+        body: { email },
+      })
+      setMessage(data.message)
+      setNeedsConfirmation(false)
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+    setResending(false)
   }
 
   async function handleMagicLink(e) {
@@ -75,7 +99,17 @@ export default function Login() {
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
-          {error}
+          <p>{error}</p>
+          {needsConfirmation && (
+            <button
+              type="button"
+              onClick={handleResendConfirmation}
+              disabled={resending}
+              className="mt-2 text-nu-red font-medium underline hover:text-nu-red-light disabled:opacity-50"
+            >
+              {resending ? 'Sending...' : 'Resend confirmation email'}
+            </button>
+          )}
         </div>
       )}
 
