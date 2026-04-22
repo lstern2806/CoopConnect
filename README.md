@@ -175,14 +175,14 @@ Please make sure your code follows the existing style and all Tailwind utility c
 
 ## License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+This is a **proprietary project**. All rights reserved.
+
+**© 2026 Malika Coulibaly & Leah Sternberg.** Unauthorized use, distribution, or reproduction is prohibited.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ at Northeastern University**
-
-![Northeastern](https://img.shields.io/badge/Northeastern_University-C8102E?style=for-the-badge&logoColor=white)
+![Student Project](https://img.shields.io/badge/Student_Project-C8102E?style=for-the-badge&logoColor=white)
 
 </div>
