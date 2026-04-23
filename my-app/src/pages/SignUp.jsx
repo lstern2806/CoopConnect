@@ -37,26 +37,28 @@ export default function SignUp() {
     }
   }
 
+  const inputClasses = 'w-full px-4 py-2.5 border border-nu-gray-200 dark:border-dark-border rounded-lg text-nu-black dark:text-dark-text bg-white dark:bg-dark-card placeholder:text-nu-gray-400 dark:placeholder:text-dark-muted focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent'
+
   return (
     <div className="w-full max-w-md mx-auto">
-      <h1 className="text-3xl font-heading font-bold text-nu-black mb-2">Create your account</h1>
-      <p className="text-nu-gray-500 mb-8">Use your Northeastern email to get started</p>
+      <h1 className="text-3xl font-heading font-bold text-nu-black dark:text-dark-text mb-2">Create your account</h1>
+      <p className="text-nu-gray-500 dark:text-dark-muted mb-8">Use your Northeastern email to get started</p>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg px-4 py-3 mb-4">
           {error}
         </div>
       )}
 
       {message && (
-        <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3 mb-4">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm rounded-lg px-4 py-3 mb-4">
           {message}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-nu-gray-700 mb-1">
+          <label htmlFor="email" className="block text-sm font-medium text-nu-gray-700 dark:text-dark-text mb-1">
             Northeastern Email
           </label>
           <input
@@ -66,14 +68,14 @@ export default function SignUp() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@northeastern.edu"
-            className="w-full px-4 py-2.5 border border-nu-gray-200 rounded-lg text-nu-black placeholder:text-nu-gray-400 focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent"
+            className={inputClasses}
           />
-          <p className="text-xs text-nu-gray-400 mt-1">
+          <p className="text-xs text-nu-gray-400 dark:text-dark-muted mt-1">
             Only @northeastern.edu and @husky.neu.edu emails accepted
           </p>
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-nu-gray-700 mb-1">
+          <label htmlFor="password" className="block text-sm font-medium text-nu-gray-700 dark:text-dark-text mb-1">
             Password
           </label>
           <input
@@ -83,11 +85,11 @@ export default function SignUp() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="At least 6 characters"
-            className="w-full px-4 py-2.5 border border-nu-gray-200 rounded-lg text-nu-black placeholder:text-nu-gray-400 focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent"
+            className={inputClasses}
           />
         </div>
         <div>
-          <label htmlFor="confirm-password" className="block text-sm font-medium text-nu-gray-700 mb-1">
+          <label htmlFor="confirm-password" className="block text-sm font-medium text-nu-gray-700 dark:text-dark-text mb-1">
             Confirm Password
           </label>
           <input
@@ -97,7 +99,7 @@ export default function SignUp() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Re-enter your password"
-            className="w-full px-4 py-2.5 border border-nu-gray-200 rounded-lg text-nu-black placeholder:text-nu-gray-400 focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent"
+            className={inputClasses}
           />
         </div>
         <button
@@ -109,7 +111,7 @@ export default function SignUp() {
         </button>
       </form>
 
-      <p className="text-center text-sm text-nu-gray-500 mt-6">
+      <p className="text-center text-sm text-nu-gray-500 dark:text-dark-muted mt-6">
         Already have an account?{' '}
         <Link to="/login" className="text-nu-red font-medium hover:underline">
           Sign in

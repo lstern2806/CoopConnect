@@ -1,8 +1,12 @@
 import { Link } from 'react-router'
+import ThemeToggle from '../components/ThemeToggle'
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-nu-black font-body">
+    <div className="min-h-screen bg-nu-black dark:bg-dark-bg font-body">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <h1 className="text-5xl sm:text-6xl font-heading font-bold text-white mb-4">
           NU <span className="text-nu-red-light">Co-op Connect</span>

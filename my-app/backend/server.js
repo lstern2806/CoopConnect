@@ -20,6 +20,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profiles', require('./routes/profiles'));
+app.use('/api/reviews', require('./routes/reviews'));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

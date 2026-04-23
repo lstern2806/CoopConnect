@@ -7,6 +7,8 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
+import Reviews from './pages/Reviews'
+import ReviewForm from './pages/ReviewForm'
 import NotFound from './pages/NotFound'
 
 const router = createBrowserRouter([
@@ -29,6 +31,8 @@ const router = createBrowserRouter([
         children: [
           { path: '/dashboard', element: <Dashboard /> },
           { path: '/profile', element: <Profile /> },
+          { path: '/reviews', element: <Reviews /> },
+          { path: '/reviews/new', element: <ReviewForm /> },
         ],
       },
     ],
