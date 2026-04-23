@@ -20,7 +20,7 @@ function CharCounter({ value, max }) {
   const near = len > max * 0.8
   const over = len > max
   return (
-    <span className={`text-xs ${over ? 'text-red-500 font-semibold' : near ? 'text-nu-orange' : 'text-nu-gray-400'}`}>
+    <span className={`text-xs ${over ? 'text-red-500 font-semibold' : near ? 'text-nu-orange' : 'text-nu-gray-400 dark:text-dark-muted'}`}>
       {len}/{max}
     </span>
   )
@@ -121,23 +121,26 @@ export default function Profile() {
     )
   }
 
+  const inputClasses = 'w-full px-4 py-2.5 border border-nu-gray-200 dark:border-dark-border rounded-lg text-nu-black dark:text-dark-text bg-white dark:bg-dark-card placeholder:text-nu-gray-400 dark:placeholder:text-dark-muted focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent'
+  const selectClasses = 'w-full px-4 py-2.5 border border-nu-gray-200 dark:border-dark-border rounded-lg text-nu-black dark:text-dark-text bg-white dark:bg-dark-card focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent'
+
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-heading font-bold text-nu-black mb-1">Your Profile</h1>
-      <p className="text-nu-gray-500 mb-8">{user.email}</p>
+      <h1 className="text-3xl font-heading font-bold text-nu-black dark:text-dark-text mb-1">Your Profile</h1>
+      <p className="text-nu-gray-500 dark:text-dark-muted mb-8">{user.email}</p>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg px-4 py-3 mb-4">
           {error}
         </div>
       )}
       {message && (
-        <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3 mb-4">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm rounded-lg px-4 py-3 mb-4">
           {message}
         </div>
       )}
       {profanityWarning && (
-        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg px-4 py-3 mb-4">
           {profanityWarning}
         </div>
       )}
@@ -145,7 +148,7 @@ export default function Profile() {
       <form onSubmit={handleSave} className="space-y-5">
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label htmlFor="full_name" className="text-sm font-medium text-nu-gray-700">Full Name</label>
+            <label htmlFor="full_name" className="text-sm font-medium text-nu-gray-700 dark:text-dark-text">Full Name</label>
             <CharCounter value={profile?.full_name} max={FIELD_LIMITS.full_name} />
           </div>
           <input
@@ -154,15 +157,15 @@ export default function Profile() {
             value={profile?.full_name || ''}
             onChange={(e) => updateField('full_name', e.target.value)}
             placeholder="Your full name"
-            className={`w-full px-4 py-2.5 border rounded-lg text-nu-black placeholder:text-nu-gray-400 focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent ${
-              hasProfanity(profile?.full_name) ? 'border-red-500 bg-red-50' : 'border-nu-gray-200'
+            className={`${inputClasses} ${
+              hasProfanity(profile?.full_name) ? '!border-red-500 !bg-red-50 dark:!bg-red-900/20' : ''
             }`}
           />
         </div>
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label htmlFor="major" className="text-sm font-medium text-nu-gray-700">Major</label>
+            <label htmlFor="major" className="text-sm font-medium text-nu-gray-700 dark:text-dark-text">Major</label>
             <CharCounter value={profile?.major} max={FIELD_LIMITS.major} />
           </div>
           <input
@@ -171,20 +174,20 @@ export default function Profile() {
             value={profile?.major || ''}
             onChange={(e) => updateField('major', e.target.value)}
             placeholder="e.g. Computer Science"
-            className="w-full px-4 py-2.5 border border-nu-gray-200 rounded-lg text-nu-black placeholder:text-nu-gray-400 focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent"
+            className={inputClasses}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="graduation_year" className="block text-sm font-medium text-nu-gray-700 mb-1">
+            <label htmlFor="graduation_year" className="block text-sm font-medium text-nu-gray-700 dark:text-dark-text mb-1">
               Graduation Year
             </label>
             <select
               id="graduation_year"
               value={profile?.graduation_year || ''}
               onChange={(e) => updateField('graduation_year', e.target.value ? parseInt(e.target.value) : null)}
-              className="w-full px-4 py-2.5 border border-nu-gray-200 rounded-lg text-nu-black focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent bg-white"
+              className={selectClasses}
             >
               <option value="">Select year</option>
               {Array.from({ length: 8 }, (_, i) => 2024 + i).map((year) => (
@@ -194,14 +197,14 @@ export default function Profile() {
           </div>
 
           <div>
-            <label htmlFor="coop_cycle" className="block text-sm font-medium text-nu-gray-700 mb-1">
+            <label htmlFor="coop_cycle" className="block text-sm font-medium text-nu-gray-700 dark:text-dark-text mb-1">
               Co-op Cycle
             </label>
             <select
               id="coop_cycle"
               value={profile?.coop_cycle || ''}
               onChange={(e) => updateField('coop_cycle', e.target.value)}
-              className="w-full px-4 py-2.5 border border-nu-gray-200 rounded-lg text-nu-black focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent bg-white"
+              className={selectClasses}
             >
               <option value="">Select cycle</option>
               {COOP_CYCLES.map((cycle) => (
@@ -213,7 +216,7 @@ export default function Profile() {
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label htmlFor="bio" className="text-sm font-medium text-nu-gray-700">Bio</label>
+            <label htmlFor="bio" className="text-sm font-medium text-nu-gray-700 dark:text-dark-text">Bio</label>
             <CharCounter value={profile?.bio} max={FIELD_LIMITS.bio} />
           </div>
           <textarea
@@ -222,14 +225,17 @@ export default function Profile() {
             value={profile?.bio || ''}
             onChange={(e) => updateField('bio', e.target.value)}
             placeholder="Tell us about yourself..."
-            className={`w-full px-4 py-2.5 border rounded-lg text-nu-black placeholder:text-nu-gray-400 focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent resize-none ${
-              hasProfanity(profile?.bio) ? 'border-red-500 bg-red-50' : 'border-nu-gray-200'
+            className={`${inputClasses} resize-none ${
+              hasProfanity(profile?.bio) ? '!border-red-500 !bg-red-50 dark:!bg-red-900/20' : ''
             }`}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-nu-gray-700 mb-1">Interests</label>
+          <div className="flex justify-between items-center mb-1">
+            <label className="text-sm font-medium text-nu-gray-700 dark:text-dark-text">Interests</label>
+            <CharCounter value={interestInput} max={50} />
+          </div>
           <div className="flex gap-2 mb-2">
             <input
               type="text"
@@ -238,12 +244,12 @@ export default function Profile() {
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addInterest())}
               placeholder="Add an interest and press Enter"
               maxLength={50}
-              className="flex-1 px-4 py-2.5 border border-nu-gray-200 rounded-lg text-nu-black placeholder:text-nu-gray-400 focus:outline-none focus:ring-2 focus:ring-nu-red focus:border-transparent"
+              className={`flex-1 ${inputClasses}`}
             />
             <button
               type="button"
               onClick={addInterest}
-              className="px-4 py-2.5 bg-nu-gray-100 border border-nu-gray-200 rounded-lg text-nu-gray-700 font-medium hover:bg-nu-gray-200 transition-colors"
+              className="px-4 py-2.5 bg-nu-gray-100 dark:bg-dark-card border border-nu-gray-200 dark:border-dark-border rounded-lg text-nu-gray-700 dark:text-dark-text font-medium hover:bg-nu-gray-200 dark:hover:bg-dark-border transition-colors"
             >
               Add
             </button>

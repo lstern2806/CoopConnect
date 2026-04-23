@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'DM Sans', sans-serif;
@@ -16,4 +18,11 @@
   --color-nu-green: #16A34A;
   --color-nu-orange: #EA580C;
   --color-nu-purple: #7C3AED;
+
+  --color-dark-bg: #0f0f0f;
+  --color-dark-surface: #1a1a1a;
+  --color-dark-card: #242424;
+  --color-dark-border: #333;
+  --color-dark-text: #e5e5e5;
+  --color-dark-muted: #999;
 }
